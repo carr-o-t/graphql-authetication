@@ -15,7 +15,7 @@ import {
 import React from "react";
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:8080",
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
   fetchOptions: { cache: "no-store" },
 });
 
