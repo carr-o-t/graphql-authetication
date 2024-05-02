@@ -63,5 +63,3 @@ app.use(
     process.exit(1); // Exit process on connection failure
   }
 })();
-
-module.exports.handler = serverless(app);
