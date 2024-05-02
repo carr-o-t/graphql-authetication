@@ -2,6 +2,19 @@ const mongoose = require("mongoose");
 const { isEmail, isAlphanumeric } = require("validator"); // For basic validation
 
 const userSchema = new mongoose.Schema({
+  ID: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  followerCount: {
+    type: Number,
+    required: false,
+  },
+  followingCount: {
+    type: Number,
+    required: false,
+  },
   firstName: {
     type: String,
     required: true,
@@ -9,7 +22,7 @@ const userSchema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
   },
   email: {

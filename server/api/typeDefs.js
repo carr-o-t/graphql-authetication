@@ -4,16 +4,19 @@ const { gql } = require("apollo-server");
 // your data.
 module.exports = gql`
   type User {
+    ID: String!
     firstName: String!
-    lastName: String!
+    lastName: String
     email: String!
     username: String!
     phoneNumber: String
+    followerCount: Int
+    followingCount: Int
   }
 
   type SignUpReq {
     firstName: String!
-    lastName: String!
+    lastName: String
     email: String!
     password: String!
     username: String!
@@ -26,8 +29,6 @@ module.exports = gql`
   }
 
   type SignRes {
-    token: String!
-    expiresIn: String!
     user: User!
   }
 
@@ -35,6 +36,19 @@ module.exports = gql`
     token: String!
     expiresIn: String!
     user: User!
+  }
+
+  type followUser {
+    ID: String!
+    email: String!
+    username: String!
+    followerCount: Int
+    followingCount: Int
+  }
+
+  type FollowRes {
+    me: followUser!
+    followedUser: followUser!
   }
 
   type Query {
@@ -45,7 +59,7 @@ module.exports = gql`
   type Mutation {
     signup(
       firstName: String!
-      lastName: String!
+      lastName: String
       email: String!
       password: String!
       username: String!
@@ -53,6 +67,7 @@ module.exports = gql`
     ): SignRes!
 
     signin(email: String!, password: String!): AuthPayload!
+    followUser(userID: String!): FollowRes!
   }
 `;
 
