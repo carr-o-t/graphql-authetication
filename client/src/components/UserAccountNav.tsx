@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { styled } from "@mui/system";
 import PersonIcon from "@mui/icons-material/Person";
 
+
 interface UserAccountNavProps {
   user: {
     username: string;
