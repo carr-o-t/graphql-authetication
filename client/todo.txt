@@ -1,0 +1,5 @@
+1. sign up page
+2. dashboard page
+3. list users
+4. increase follow count
+5. middleware route protection
