@@ -10,10 +10,12 @@ const userSchema = new mongoose.Schema({
   followerCount: {
     type: Number,
     required: false,
+    default: 0
   },
   followingCount: {
     type: Number,
     required: false,
+    default: 0
   },
   firstName: {
     type: String,
