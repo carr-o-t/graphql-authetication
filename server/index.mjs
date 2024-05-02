@@ -1,9 +1,9 @@
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import typeDefs from "../server/api/typeDefs.js";
-import resolvers from "../server/api/resolvers.js";
-import auth from "../server/middleware/auth.js";
+import typeDefs from "./api/typeDefs.js";
+import resolvers from "./api/resolvers.js";
+import auth from "./middleware/auth.js";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
 import bodyParser from "body-parser";
