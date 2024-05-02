@@ -45,7 +45,7 @@ const UserCard: FC<UserCardProps> = ({
         //   console.log(e)
         // }),
         {
-          loading: "redirecting to dashboard...",
+          loading: "updating! please wait...",
           success: () => {
             refetch();
             refetchCurrentUser();
