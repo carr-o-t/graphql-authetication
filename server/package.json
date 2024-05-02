@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.mjs",
-    "build": "netlify deploy --prod"
+    "start": "nodemon index.mjs"
   },
   "keywords": [],
   "author": "",
