@@ -157,34 +157,40 @@ module.exports = {
       }
 
       // only increment the counters when a new follow record was actually inserted
-      if (isNewFollow) {
-        currentUser.followingCount += 1;
-        userToBeFollowed.followerCount += 1;
+      let meUser = currentUser;
+      let followedUser = userToBeFollowed;
 
-        await User.findOneAndUpdate(
-          { ID: userId },
-          { followingCount: currentUser.followingCount }
-        );
-        await User.findOneAndUpdate(
-          { ID: userID },
-          { followerCount: userToBeFollowed.followerCount }
-        );
+      if (isNewFollow) {
+        // $inc performs the increment atomically in the database
+        // amd { new: true } will return the post-increment documents
+        [meUser, followedUser] = await Promise.all([
+          User.findOneAndUpdate(
+            { ID: userId },
+            { $inc: { followingCount: 1 } },
+            { new: true }
+          ).select("-password"),
+          User.findOneAndUpdate(
+            { ID: userID },
+            { $inc: { followerCount: 1 } },
+            { new: true }
+          ).select("-password"),
+        ]);
       }
 
       return {
         me: {
-          email: currentUser.email,
-          username: currentUser.username,
-          ID: currentUser.ID,
-          followerCount: currentUser.followerCount,
-          followingCount: currentUser.followingCount,
+          email: meUser.email,
+          username: meUser.username,
+          ID: meUser.ID,
+          followerCount: meUser.followerCount,
+          followingCount: meUser.followingCount,
         },
         followedUser: {
-          email: userToBeFollowed.email,
-          username: userToBeFollowed.username,
-          ID: userToBeFollowed.ID,
-          followerCount: userToBeFollowed.followerCount,
-          followingCount: userToBeFollowed.followingCount,
+          email: followedUser.email,
+          username: followedUser.username,
+          ID: followedUser.ID,
+          followerCount: followedUser.followerCount,
+          followingCount: followedUser.followingCount,
         },
       };
     },
