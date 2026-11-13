@@ -18,16 +18,25 @@ const font = Poppins({
 interface UserCardProps {
   firstName: string;
   username: string;
+  email?: string;
   ID: string;
   followerCount: number;
   followingCount: number;
   isFollowing?: boolean;
+  currentUser?: {
+    ID?: string;
+    username?: string;
+    email?: string;
+    followerCount?: number;
+    followingCount?: number;
+  };
   refetch?: any;
   refetchCurrentUser?: any;
   isFollowable?: boolean;
 }
 
 const UserCard: FC<UserCardProps> = ({
+  currentUser,
   refetch,
   refetchCurrentUser,
   isFollowable = true,
@@ -59,8 +68,38 @@ const UserCard: FC<UserCardProps> = ({
     // toggle: if we already follow this user then unfollow
     const mutate = isFollowing ? unfollowUser : followUser;
 
+    // optimistic payload
+    const optimisticResponse = {
+      __typename: "Mutation",
+      [isFollowing ? "unfollowUser" : "followUser"]: {
+        __typename: "FollowRes",
+        me: {
+          __typename: "User",
+          ID: currentUser?.ID,
+          username: currentUser?.username,
+          email: currentUser?.email,
+          followerCount: currentUser?.followerCount ?? 0,
+          followingCount:
+            (currentUser?.followingCount ?? 0) + (isFollowing ? -1 : 1),
+          isFollowing: false,
+        },
+        followedUser: {
+          __typename: "User",
+          ID: item.ID,
+          username: item.username,
+          email: item.email,
+          followerCount: (item.followerCount ?? 0) + (isFollowing ? -1 : 1),
+          followingCount: item.followingCount ?? 0,
+          isFollowing: !isFollowing,
+        },
+      },
+    };
+
     startTransition(() => {
-      toast.promise(async () => await mutate({ variables: { userId: item.ID } }), {
+      toast.promise(
+        async () =>
+          await mutate({ variables: { userId: item.ID }, optimisticResponse }),
+        {
         loading: "updating! please wait...",
         success: () => {
           return isFollowing
@@ -195,7 +234,8 @@ const UserCard: FC<UserCardProps> = ({
               className="w-full"
               variant="outlined"
               // style={{ color: "#9957ff" }}
-              disabled={isPending || mutationLoading}
+              // wait for the current user so the optimistic payload has its ID
+              disabled={isPending || mutationLoading || !currentUser?.ID}
               onClick={handleFollowUser}
             >
               {item.isFollowing ? "Following" : "Follow"}
