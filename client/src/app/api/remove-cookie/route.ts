@@ -19,18 +19,16 @@ export async function POST(request: Request) {
     );
   }
 
-  // If all required fields are present, continue processing
-  // cookies().delete(key)
+  // expire the cookie
+  const response = NextResponse.json({ success: true }, { status: 201 });
 
-  return NextResponse.json(
-    {
-      success: true,
-    },
-    {
-      status: 201,
-      headers: {
-        "Set-Cookie": `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; Max-Age=0; Secure; HttpOnly`,
-      },
-    }
-  );
+  response.cookies.set({
+    name: key,
+    value: "",
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 0,
+  });
+
+  return response;
 }
