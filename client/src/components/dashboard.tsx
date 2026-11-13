@@ -92,6 +92,7 @@ const Dashboard: FC<DashboardProps> = ({}) => {
           <div key={idx} style={{ flexShrink: 0, width: "400px" }}>
             <UserCard
               {...item}
+              currentUser={curentUser?.me}
               refetch={refetch}
               refetchCurrentUser={refetchCurrentUser}
             />

@@ -1,5 +1,4 @@
 import { API } from "@/types";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -20,32 +19,19 @@ export async function POST(request: Request) {
     );
   }
 
-  // If all required fields are present, continue processing
-  // TODO: add domain name for careers
   var expirationDate = new Date(token_expiry * 1000);
   // const token_expiry_date = expirationDate.getTime() / 1000;
 
-  cookies().set({
+  const response = NextResponse.json({ success: true }, { status: 201 });
+
+  response.cookies.set({
     name: key,
     value: token,
     httpOnly: false,
     path: "/",
-    secure: true,
-    domain: process.env.NEXT_PUBLIC_URL,
+    secure: process.env.NODE_ENV === "production",
     expires: expirationDate,
   });
-
-  const response = NextResponse.json(
-    {
-      success: true,
-    },
-    {
-      status: 201,
-      headers: {
-        "Set-Cookie": `${key}=${token}; path=/; Expires=${expirationDate}; Secure;`,
-      },
-    }
-  );
 
   return response;
 }

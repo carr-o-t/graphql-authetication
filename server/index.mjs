@@ -3,14 +3,12 @@ import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import typeDefs from "./api/typeDefs.js";
 import resolvers from "./api/resolvers.js";
-import auth from "./middleware/auth.js";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import http from "http";
-import serverless from "serverless-http";
 
 dotenv.config();
 
@@ -26,7 +24,6 @@ const server = new ApolloServer({
   resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   context: ({ req }) => {
-    console.log("SERVER ::: ", req);
     return { user: req.currentUser };
   },
 });
@@ -37,8 +34,7 @@ await server.start();
 app.use(
   cors(),
   bodyParser.json(),
-  expressMiddleware(server, { context }),
-  auth
+  expressMiddleware(server, { context })
 );
 
 // Connect to MongoDB before starting the server

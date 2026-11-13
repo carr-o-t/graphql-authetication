@@ -1,12 +1,14 @@
 import { FC, useTransition } from "react";
+import { useMutation } from "@apollo/client";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import { cn } from "@/lib/utils";
 import { Poppins } from "next/font/google";
-import { followUser } from "@/actions/follow-user";
+import { FOLLOW_USER, UNFOLLOW_USER } from "@/lib/graphql-api";
+import { AUTH_TOKEN_KEY } from "@/config";
+import Cookies from "js-cookie";
 import { toast } from "sonner";
-import { client } from "./ApolloWrapper";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -16,44 +18,103 @@ const font = Poppins({
 interface UserCardProps {
   firstName: string;
   username: string;
+  email?: string;
   ID: string;
   followerCount: number;
   followingCount: number;
+  isFollowing?: boolean;
+  currentUser?: {
+    ID?: string;
+    username?: string;
+    email?: string;
+    followerCount?: number;
+    followingCount?: number;
+  };
   refetch?: any;
   refetchCurrentUser?: any;
   isFollowable?: boolean;
 }
 
 const UserCard: FC<UserCardProps> = ({
+  currentUser,
   refetch,
   refetchCurrentUser,
   isFollowable = true,
   ...item
 }) => {
   const [isPending, startTransition] = useTransition();
+  const token = Cookies.get(AUTH_TOKEN_KEY);
+
+  // run on the app's apollo provider client, so the results flow into the cache
+  const withAuthContext = {
+    context: {
+      headers: {
+        Authorization: token,
+      },
+    },
+  };
+  const [followUser, { loading: followLoading }] = useMutation(
+    FOLLOW_USER,
+    withAuthContext
+  );
+  const [unfollowUser, { loading: unfollowLoading }] = useMutation(
+    UNFOLLOW_USER,
+    withAuthContext
+  );
+  const mutationLoading = followLoading || unfollowLoading;
 
   function handleFollowUser() {
-    client.refetchQueries({});
+    const isFollowing = item.isFollowing;
+    // toggle: if we already follow this user then unfollow
+    const mutate = isFollowing ? unfollowUser : followUser;
+
+    // optimistic payload
+    const optimisticResponse = {
+      __typename: "Mutation",
+      [isFollowing ? "unfollowUser" : "followUser"]: {
+        __typename: "FollowRes",
+        me: {
+          __typename: "User",
+          ID: currentUser?.ID,
+          username: currentUser?.username,
+          email: currentUser?.email,
+          followerCount: currentUser?.followerCount ?? 0,
+          followingCount:
+            (currentUser?.followingCount ?? 0) + (isFollowing ? -1 : 1),
+          isFollowing: false,
+        },
+        followedUser: {
+          __typename: "User",
+          ID: item.ID,
+          username: item.username,
+          email: item.email,
+          followerCount: (item.followerCount ?? 0) + (isFollowing ? -1 : 1),
+          followingCount: item.followingCount ?? 0,
+          isFollowing: !isFollowing,
+        },
+      },
+    };
+
     startTransition(() => {
       toast.promise(
-        async () => await followUser(item.ID, item.username),
-        // .then((data: any) => {
-        //   console.log(data);
-        // })
-        // .catch((error: any) => {
-        //   const e = error;
-        //   console.log(e)
-        // }),
+        async () =>
+          await mutate({ variables: { userId: item.ID }, optimisticResponse }),
         {
-          loading: "updating! please wait...",
-          success: () => {
-            refetch();
-            refetchCurrentUser();
-            return `You followed ${item.username}`;
-          },
-          error: "Error",
-        }
-      );
+        loading: "updating! please wait...",
+        success: () => {
+          return isFollowing
+            ? `You unfollowed ${item.username}`
+            : `You followed ${item.username}`;
+        },
+        error: (error: any) => {
+          // show error toast for server error
+          const reason =
+            error?.graphQLErrors?.[0]?.message || error?.message || "";
+          return reason
+            ? `Failed to ${isFollowing ? "unfollow" : "follow"} ${item.username}: ${reason}`
+            : `Failed to ${isFollowing ? "unfollow" : "follow"} ${item.username}`;
+        },
+      });
     });
   }
   return (
@@ -173,10 +234,11 @@ const UserCard: FC<UserCardProps> = ({
               className="w-full"
               variant="outlined"
               // style={{ color: "#9957ff" }}
-              disabled={isPending}
+              // wait for the current user so the optimistic payload has its ID
+              disabled={isPending || mutationLoading || !currentUser?.ID}
               onClick={handleFollowUser}
             >
-              Follow
+              {item.isFollowing ? "Following" : "Follow"}
             </Button>
           </div>
         </CardActions>

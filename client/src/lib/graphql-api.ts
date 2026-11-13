@@ -70,6 +70,7 @@ export const LIST_USERS = gql`
       ID
       followingCount
       followerCount
+      isFollowing
     }
   }
 `;
@@ -83,6 +84,7 @@ export const FOLLOW_USER = gql`
         followerCount
         email
         ID
+        isFollowing
       }
       followedUser {
         followingCount
@@ -90,6 +92,30 @@ export const FOLLOW_USER = gql`
         followerCount
         email
         ID
+        isFollowing
+      }
+    }
+  }
+`;
+
+export const UNFOLLOW_USER = gql`
+  mutation UnfollowUser($userId: String!) {
+    unfollowUser(userID: $userId) {
+      me {
+        username
+        followingCount
+        followerCount
+        email
+        ID
+        isFollowing
+      }
+      followedUser {
+        followingCount
+        username
+        followerCount
+        email
+        ID
+        isFollowing
       }
     }
   }
