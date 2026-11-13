@@ -39,17 +39,9 @@ module.exports = gql`
     user: User!
   }
 
-  type followUser {
-    ID: String!
-    email: String!
-    username: String!
-    followerCount: Int
-    followingCount: Int
-  }
-
   type FollowRes {
-    me: followUser!
-    followedUser: followUser!
+    me: User!
+    followedUser: User!
   }
 
   type Query {

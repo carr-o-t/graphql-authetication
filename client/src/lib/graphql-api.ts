@@ -84,6 +84,7 @@ export const FOLLOW_USER = gql`
         followerCount
         email
         ID
+        isFollowing
       }
       followedUser {
         followingCount
@@ -91,6 +92,7 @@ export const FOLLOW_USER = gql`
         followerCount
         email
         ID
+        isFollowing
       }
     }
   }
@@ -105,6 +107,7 @@ export const UNFOLLOW_USER = gql`
         followerCount
         email
         ID
+        isFollowing
       }
       followedUser {
         followingCount
@@ -112,6 +115,7 @@ export const UNFOLLOW_USER = gql`
         followerCount
         email
         ID
+        isFollowing
       }
     }
   }

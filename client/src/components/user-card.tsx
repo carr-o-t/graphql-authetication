@@ -63,8 +63,6 @@ const UserCard: FC<UserCardProps> = ({
       toast.promise(async () => await mutate({ variables: { userId: item.ID } }), {
         loading: "updating! please wait...",
         success: () => {
-          refetch();
-          refetchCurrentUser();
           return isFollowing
             ? `You unfollowed ${item.username}`
             : `You followed ${item.username}`;
