@@ -1,8 +1,8 @@
-const { gql } = require("apollo-server");
+// plain string schema, the "#graphql" tag only enables editor highlighting
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
-module.exports = gql`
+module.exports = `#graphql
   type User {
     ID: String!
     firstName: String!

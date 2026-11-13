@@ -10,9 +10,8 @@ const authRoutes = ["/auth/login", "/auth/signup", "/"];
 export default function middleware(req: NextRequest) {
   const token = req.cookies.get(AUTH_TOKEN_KEY || "")?.value;
 
-  const isAuthRoute = authRoutes.some((route) =>
-    route.includes(req.nextUrl.pathname)
-  );
+  // exact match auth routes
+  const isAuthRoute = authRoutes.includes(req.nextUrl.pathname);
 
   //   user is unauthenticated tried to access protected route we redirect them to "/"
   if (!token && !isAuthRoute) {
