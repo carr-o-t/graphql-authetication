@@ -12,6 +12,7 @@ module.exports = gql`
     phoneNumber: String
     followerCount: Int
     followingCount: Int
+    isFollowing: Boolean!
   }
 
   type SignUpReq {

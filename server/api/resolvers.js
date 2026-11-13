@@ -7,6 +7,19 @@ const { v4: uuidv4 } = require("uuid");
 const { getUserFromContext } = require("../utils/auth");
 
 module.exports = {
+  User: {
+    isFollowing: async (parent, args, context) => {
+      let userId;
+      try {
+        userId = getUserFromContext(context);
+      } catch (error) {
+        return false;
+      }
+      return Boolean(
+        await Follow.exists({ followerId: userId, followeeId: parent.ID })
+      );
+    },
+  },
   Query: {
     users: async (parent, args, context) => {
       const userId = getUserFromContext(context);
