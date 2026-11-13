@@ -8,11 +8,8 @@ const generateToken = (userId, email, expiresIn = "1h") => {
 };
 
 const verifyToken = (token) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (error) {
-    return null;
-  }
+  // throw TokenExpiredError/JsonWebTokenError for invalid tokens
+  return jwt.verify(token, process.env.JWT_SECRET);
 };
 
 module.exports = { generateToken, verifyToken };
