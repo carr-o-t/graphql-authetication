@@ -44,8 +44,15 @@ const UserCard: FC<UserCardProps> = ({
       },
     },
   };
-  const [followUser] = useMutation(FOLLOW_USER, withAuthContext);
-  const [unfollowUser] = useMutation(UNFOLLOW_USER, withAuthContext);
+  const [followUser, { loading: followLoading }] = useMutation(
+    FOLLOW_USER,
+    withAuthContext
+  );
+  const [unfollowUser, { loading: unfollowLoading }] = useMutation(
+    UNFOLLOW_USER,
+    withAuthContext
+  );
+  const mutationLoading = followLoading || unfollowLoading;
 
   function handleFollowUser() {
     const isFollowing = item.isFollowing;
@@ -62,7 +69,14 @@ const UserCard: FC<UserCardProps> = ({
             ? `You unfollowed ${item.username}`
             : `You followed ${item.username}`;
         },
-        error: "Error",
+        error: (error: any) => {
+          // show error toast for server error
+          const reason =
+            error?.graphQLErrors?.[0]?.message || error?.message || "";
+          return reason
+            ? `Failed to ${isFollowing ? "unfollow" : "follow"} ${item.username}: ${reason}`
+            : `Failed to ${isFollowing ? "unfollow" : "follow"} ${item.username}`;
+        },
       });
     });
   }
@@ -183,7 +197,7 @@ const UserCard: FC<UserCardProps> = ({
               className="w-full"
               variant="outlined"
               // style={{ color: "#9957ff" }}
-              disabled={isPending}
+              disabled={isPending || mutationLoading}
               onClick={handleFollowUser}
             >
               {item.isFollowing ? "Following" : "Follow"}
