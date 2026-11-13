@@ -15,4 +15,7 @@ const followSchema = new mongoose.Schema({
   },
 });
 
+// a user can follow another user at most once
+followSchema.index({ followerId: 1, followeeId: 1 }, { unique: true });
+
 module.exports = mongoose.model("Follow", followSchema);
