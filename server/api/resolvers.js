@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Follow = require("../models/Follow");
 const { hashPassword, comparePasswords } = require("../utils/bcrypt");
 const { generateToken, verifyToken } = require("../utils/jwt");
 const { GraphQLError } = require("graphql");
@@ -143,19 +144,32 @@ module.exports = {
         "-password"
       );
 
-      currentUser.followingCount += 1;
-      userToBeFollowed.followerCount += 1;
+      // if create Follow returns duplicate err then return the current state without incrementing anything
+      let isNewFollow = true;
+      try {
+        await Follow.create({ followerId: userId, followeeId: userID });
+      } catch (error) {
+        if (error.code === 11000) {
+          isNewFollow = false;
+        } else {
+          throw error;
+        }
+      }
 
-      const currentUpdatedUser = await User.findOneAndUpdate(
-        { ID: userId },
-        { followingCount: currentUser.followingCount }
-      ).select("-password");
-      const followedUpdatedUser = await User.findOneAndUpdate(
-        { ID: userID },
-        { followerCount: userToBeFollowed.followerCount }
-      ).select("-password");
+      // only increment the counters when a new follow record was actually inserted
+      if (isNewFollow) {
+        currentUser.followingCount += 1;
+        userToBeFollowed.followerCount += 1;
 
-      console.log(currentUser, currentUpdatedUser);
+        await User.findOneAndUpdate(
+          { ID: userId },
+          { followingCount: currentUser.followingCount }
+        );
+        await User.findOneAndUpdate(
+          { ID: userID },
+          { followerCount: userToBeFollowed.followerCount }
+        );
+      }
 
       return {
         me: {
