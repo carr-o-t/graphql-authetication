@@ -5,7 +5,7 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import { cn } from "@/lib/utils";
 import { Poppins } from "next/font/google";
-import { FOLLOW_USER } from "@/lib/graphql-api";
+import { FOLLOW_USER, UNFOLLOW_USER } from "@/lib/graphql-api";
 import { AUTH_TOKEN_KEY } from "@/config";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -21,6 +21,7 @@ interface UserCardProps {
   ID: string;
   followerCount: number;
   followingCount: number;
+  isFollowing?: boolean;
   refetch?: any;
   refetchCurrentUser?: any;
   isFollowable?: boolean;
@@ -36,22 +37,30 @@ const UserCard: FC<UserCardProps> = ({
   const token = Cookies.get(AUTH_TOKEN_KEY);
 
   // run on the app's apollo provider client, so the results flow into the cache
-  const [followUser] = useMutation(FOLLOW_USER, {
+  const withAuthContext = {
     context: {
       headers: {
         Authorization: token,
       },
     },
-  });
+  };
+  const [followUser] = useMutation(FOLLOW_USER, withAuthContext);
+  const [unfollowUser] = useMutation(UNFOLLOW_USER, withAuthContext);
 
   function handleFollowUser() {
+    const isFollowing = item.isFollowing;
+    // toggle: if we already follow this user then unfollow
+    const mutate = isFollowing ? unfollowUser : followUser;
+
     startTransition(() => {
-      toast.promise(async () => await followUser({ variables: { userId: item.ID } }), {
+      toast.promise(async () => await mutate({ variables: { userId: item.ID } }), {
         loading: "updating! please wait...",
         success: () => {
           refetch();
           refetchCurrentUser();
-          return `You followed ${item.username}`;
+          return isFollowing
+            ? `You unfollowed ${item.username}`
+            : `You followed ${item.username}`;
         },
         error: "Error",
       });
@@ -177,7 +186,7 @@ const UserCard: FC<UserCardProps> = ({
               disabled={isPending}
               onClick={handleFollowUser}
             >
-              Follow
+              {item.isFollowing ? "Following" : "Follow"}
             </Button>
           </div>
         </CardActions>
