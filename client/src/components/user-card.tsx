@@ -1,12 +1,14 @@
 import { FC, useTransition } from "react";
+import { useMutation } from "@apollo/client";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import { cn } from "@/lib/utils";
 import { Poppins } from "next/font/google";
-import { followUser } from "@/actions/follow-user";
+import { FOLLOW_USER } from "@/lib/graphql-api";
+import { AUTH_TOKEN_KEY } from "@/config";
+import Cookies from "js-cookie";
 import { toast } from "sonner";
-import { client } from "./ApolloWrapper";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -31,29 +33,28 @@ const UserCard: FC<UserCardProps> = ({
   ...item
 }) => {
   const [isPending, startTransition] = useTransition();
+  const token = Cookies.get(AUTH_TOKEN_KEY);
+
+  // run on the app's apollo provider client, so the results flow into the cache
+  const [followUser] = useMutation(FOLLOW_USER, {
+    context: {
+      headers: {
+        Authorization: token,
+      },
+    },
+  });
 
   function handleFollowUser() {
-    client.refetchQueries({});
     startTransition(() => {
-      toast.promise(
-        async () => await followUser(item.ID, item.username),
-        // .then((data: any) => {
-        //   console.log(data);
-        // })
-        // .catch((error: any) => {
-        //   const e = error;
-        //   console.log(e)
-        // }),
-        {
-          loading: "updating! please wait...",
-          success: () => {
-            refetch();
-            refetchCurrentUser();
-            return `You followed ${item.username}`;
-          },
-          error: "Error",
-        }
-      );
+      toast.promise(async () => await followUser({ variables: { userId: item.ID } }), {
+        loading: "updating! please wait...",
+        success: () => {
+          refetch();
+          refetchCurrentUser();
+          return `You followed ${item.username}`;
+        },
+        error: "Error",
+      });
     });
   }
   return (
