@@ -68,6 +68,7 @@ module.exports = gql`
 
     signin(email: String!, password: String!): AuthPayload!
     followUser(userID: String!): FollowRes!
+    unfollowUser(userID: String!): FollowRes!
   }
 `;
 

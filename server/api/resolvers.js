@@ -194,6 +194,69 @@ module.exports = {
         },
       };
     },
+
+    unfollowUser: async (parent, args, context) => {
+      const userId = getUserFromContext(context);
+      const { userID } = args;
+
+      const userToBeUnfollowed = await User.findOne({ ID: userID }).select(
+        "-password"
+      );
+      if (!userToBeUnfollowed) {
+        throw new GraphQLError("No user found with ID", {
+          extensions: {
+            code: "RECORD_NOT_FOUND",
+          },
+        });
+      }
+
+      const currentUser = await User.findOne({ ID: userId }).select(
+        "-password"
+      );
+
+      // delete the follow record first and if nothing was deleted then we were not
+      // following this user, so we return the current state unchanged
+      const { deletedCount } = await Follow.deleteOne({
+        followerId: userId,
+        followeeId: userID,
+      });
+
+      // only decrement the counters when a follow record was actually deleted
+      let meUser = currentUser;
+      let unfollowedUser = userToBeUnfollowed;
+
+      if (deletedCount === 1) {
+        [meUser, unfollowedUser] = await Promise.all([
+          User.findOneAndUpdate(
+            { ID: userId },
+            { $inc: { followingCount: -1 } },
+            { new: true }
+          ).select("-password"),
+          User.findOneAndUpdate(
+            { ID: userID },
+            { $inc: { followerCount: -1 } },
+            { new: true }
+          ).select("-password"),
+        ]);
+      }
+
+      return {
+        me: {
+          email: meUser.email,
+          username: meUser.username,
+          ID: meUser.ID,
+          followerCount: meUser.followerCount,
+          followingCount: meUser.followingCount,
+        },
+        followedUser: {
+          email: unfollowedUser.email,
+          username: unfollowedUser.username,
+          ID: unfollowedUser.ID,
+          followerCount: unfollowedUser.followerCount,
+          followingCount: unfollowedUser.followingCount,
+        },
+      };
+    },
   },
 };
 
