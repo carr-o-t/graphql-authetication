@@ -120,6 +120,14 @@ module.exports = {
       const userId = getUserFromContext(context);
       const { userID } = args;
 
+      if (userID === userId) {
+        throw new GraphQLError("You cannot follow yourself", {
+          extensions: {
+            code: "SELF_FOLLOW_NOT_ALLOWED",
+          },
+        });
+      }
+
       const userToBeFollowed = await User.findOne({ ID: userID }).select(
         "-password"
       );
