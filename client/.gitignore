@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+build/
+dist/
+.vercel/
+
+# Environment variables (keep examples)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+pnpm-debug.log*
+
+# Testing
+coverage/
+
+# OS
+.DS_Store
