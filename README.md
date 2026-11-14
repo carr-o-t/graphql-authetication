@@ -1,67 +1,47 @@
-# Next.js GraphQL Authentication System
+# Next.js GraphQL Authentication
 
-This project is a simple authentication app built using Next.js, Apollo GraphQL. The backend is powered by Node.js with MongoDB Atlas as the database and Apollo GraphQL for handling GraphQL queries and mutations. For styling, Material-UI (MUI) is used.
+A simple authentication app built with Next.js and GraphQL. Users can sign up, log in and see a protected dashboard listing other users.
 
-## Setup Client
+## Stack
 
-Follow these steps to run the project locally:
+- **Client:** Next.js 13, Apollo Client, MUI, react-hook-form + zod
+- **Server:** Express, Apollo Server 4, MongoDB (Mongoose), JWT, bcrypt
+- **Tests:** Vitest, React Testing Library
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/carr-o-t/graphql-authetication.git
-   ```
-2. **Change directory:**
-   ```bash
-   cd client
-   ```
-3. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+## How it works
 
-## Copy Environment Variables
+1. **Signup:** the password is hashed with bcrypt and the user is saved in MongoDB.
+2. **Login:** the server returns a JWT, which the client stores in a cookie.
+3. **Protected routes:** Next.js middleware sends users without the cookie to signup, and logged-in users away from the auth pages.
+4. **GraphQL requests:** the token is sent in the `Authorization` header and checked by the resolvers.
 
-1. Rename `.env.example` file to `.env`.
-2. Update the values in the `.env` file according to your GraphQL api URL and any other necessary environment variables.
+The dashboard also has a follow/unfollow button. Following is stored in its own collection with a unique index, so following the same user twice can't inflate the counts.
 
-## Run the Development Server
+## Setup
+
+You need Node.js, pnpm and a MongoDB database.
+
+### Server
 
 ```bash
-npm run dev
+cd server
+pnpm install
+cp .env.example .env   # set MONGO_DB_URL and JWT_SECRET
+pnpm start             # http://localhost:8080
 ```
 
-## Access the Application
-
-Once the development server is up and running, you can access the application in your web browser at `http://localhost:3000`.
-
-## Setup Server
-
-Follow these steps to run the project locally:
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/carr-o-t/graphql-authetication.git
-   ```
-2. **Change directory:**
-   ```bash
-   cd server
-   ```
-3. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-## Copy Environment Variables
-
-1. Rename `.env.example` file to `.env`.
-2. Update the values in the `.env` file according to your MongoDB Atlas configuration and any other necessary environment variables.
-
-## Run the Development Server
+### Client
 
 ```bash
-npm start
+cd client
+pnpm install
+cp .env.example .env   # set NEXT_PUBLIC_GRAPHQL_ENDPOINT to the server URL
+pnpm dev               # http://localhost:3000
 ```
 
-## Access the Application
+### Tests
 
-Once the development server is up and running, you can access the application in your web browser at `http://localhost:3000`.
+```bash
+cd client
+pnpm test
+```
