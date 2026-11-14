@@ -6,6 +6,7 @@ export const LOGIN_MUTATION = gql`
       token
       expiresIn
       user {
+        ID
         email
         firstName
         lastName
@@ -34,6 +35,7 @@ export const SIGNUP_MUTATION = gql`
       phoneNumber: $phoneNumber
     ) {
       user {
+        ID
         email
         firstName
         lastName

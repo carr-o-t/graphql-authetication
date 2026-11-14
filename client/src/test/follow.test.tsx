@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { InMemoryCache } from "@apollo/client";
@@ -99,14 +99,23 @@ async function getFollowButton() {
   return button;
 }
 
+// wait until alice's card shows this follower count
+async function expectAliceFollowers(count: number) {
+  await waitFor(() =>
+    expect(
+      within(screen.getByTestId("followers-2")).getByText(String(count))
+    ).toBeInTheDocument()
+  );
+}
+
 describe("follow button", () => {
   it("increments the count and says Following after a click", async () => {
     renderDashboard(followSuccess);
-    expect(await screen.findByText("followers: 5")).toBeInTheDocument();
+    await expectAliceFollowers(5);
 
     await userEvent.click(await getFollowButton());
 
-    expect(await screen.findByText("followers: 6")).toBeInTheDocument();
+    await expectAliceFollowers(6);
     expect(
       await screen.findByRole("button", { name: "Following" })
     ).toBeInTheDocument();
@@ -114,15 +123,15 @@ describe("follow button", () => {
 
   it("rolls the count back and shows a toast when the mutation fails", async () => {
     renderDashboard(followError);
-    expect(await screen.findByText("followers: 5")).toBeInTheDocument();
+    await expectAliceFollowers(5);
 
     await userEvent.click(await getFollowButton());
 
     // optimistic update shows straight away
-    expect(await screen.findByText("followers: 6")).toBeInTheDocument();
+    await expectAliceFollowers(6);
 
     // then the server error rolls it back and the toast appears
-    expect(await screen.findByText("followers: 5")).toBeInTheDocument();
+    await expectAliceFollowers(5);
     expect(screen.getByRole("button", { name: "Follow" })).toBeInTheDocument();
     expect(
       await screen.findByText("Failed to follow alice: Simulated failure")
