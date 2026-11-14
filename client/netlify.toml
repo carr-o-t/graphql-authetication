@@ -1,0 +1,12 @@
+# netlify settings for the client (base directory: client)
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# adapter that serves the next.js app (pages, api routes, middleware).
+# named here explicitly so netlify doesn't have to auto-detect next.js
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
