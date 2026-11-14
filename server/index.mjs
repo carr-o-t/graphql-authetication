@@ -30,6 +30,14 @@ const server = new ApolloServer({
 
 await server.start();
 
+// health check
+app.get("/health", (req, res) => {
+  const dbConnected = mongoose.connection.readyState === 1;
+  res
+    .status(dbConnected ? 200 : 503)
+    .json({ status: dbConnected ? "ok" : "db disconnected" });
+});
+
 // Enable CORS for all origins (not recommended for production)
 app.use(
   cors(),
