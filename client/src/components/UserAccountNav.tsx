@@ -101,7 +101,7 @@ const Listbox = styled("ul")(
 );
 
 const AnimatedListbox = React.forwardRef(function AnimatedListbox(
-  props: MenuListboxSlotProps,
+  props: Omit<MenuListboxSlotProps, "ref">,
   ref: React.ForwardedRef<HTMLUListElement>
 ) {
   const { ownerState, ...other } = props;
