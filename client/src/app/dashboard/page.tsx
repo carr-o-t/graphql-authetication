@@ -1,6 +1,9 @@
 import { Navbar } from "@/components/Navbar";
 import Dashboard from "@/components/dashboard";
+import type { Metadata } from "next";
 import { FC } from "react";
+
+export const metadata: Metadata = { title: "Dashboard" };
 
 interface DashboardPageProps {}
 
