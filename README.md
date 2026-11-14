@@ -19,29 +19,29 @@ The dashboard also has a follow/unfollow button. Following is stored in its own 
 
 ## Setup
 
-You need Node.js, pnpm and a MongoDB database.
+You need Node.js, npm and a MongoDB database.
 
 ### Server
 
 ```bash
 cd server
-pnpm install
+npm install
 cp .env.example .env   # set MONGO_DB_URL and JWT_SECRET
-pnpm start             # http://localhost:8080
+npm start             # http://localhost:8080
 ```
 
 ### Client
 
 ```bash
 cd client
-pnpm install
+npm install
 cp .env.example .env   # set NEXT_PUBLIC_GRAPHQL_ENDPOINT to the server URL
-pnpm dev               # http://localhost:3000
+npm dev               # http://localhost:3000
 ```
 
 ### Tests
 
 ```bash
 cd client
-pnpm test
+npm test
 ```
