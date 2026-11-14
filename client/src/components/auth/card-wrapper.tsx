@@ -29,12 +29,14 @@ export const CardWrapper = ({
 }: CardWrapperProps) => {
   return (
     <Card
-      className="w-[400px] shadow-md"
+      className="w-[400px] shadow-sm"
       style={{
-        maxWidth: "512px",
+        maxWidth: "400px",
         width: "100%",
-        background: "#1c1c1cfb",
-        color: "white",
+        background: "#27272f",
+        color: "#fafafa",
+        border: "1px solid #27272a",
+        borderRadius: "8px",
       }}
     >
       <div
@@ -51,10 +53,11 @@ export const CardWrapper = ({
         <h1
           className={cn("text-3xl font-semibold", font.className)}
           style={{
-            fontSize: "1.875rem",
-            lineHeight: "2.25rem",
+            fontSize: "1.5rem",
+            lineHeight: "2rem",
             fontWeight: "600",
             margin: 0,
+            letterSpacing: "-0.025em",
           }}
         >
           {headerHeading}
@@ -65,7 +68,7 @@ export const CardWrapper = ({
             margin: 0,
             fontSize: "0.875rem",
             lineHeight: "1.25rem",
-            color: "hsl(215 20.2% 65.1%)",
+            color: "#a1a1aa",
           }}
         >
           {headerLabel}

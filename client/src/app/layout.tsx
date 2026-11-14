@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ApolloWrapper } from "@/components/ApolloWrapper";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppRouterCacheProvider>
-          <ApolloWrapper>{children}</ApolloWrapper>
-          <Toaster richColors={true} />
+          <ThemeProvider>
+            <ApolloWrapper>{children}</ApolloWrapper>
+            <Toaster richColors={true} theme="dark" />
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

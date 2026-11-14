@@ -93,7 +93,7 @@ export const LoginForm = () => {
           >
             <FormLabel
               style={{
-                color: "hsl(215 20.2% 65.1%)",
+                color: "#a1a1aa",
                 fontSize: "14px !important",
               }}
             >
@@ -118,7 +118,7 @@ export const LoginForm = () => {
           >
             <FormLabel
               style={{
-                color: "hsl(215 20.2% 65.1%)",
+                color: "#a1a1aa",
                 fontSize: "14px !important",
               }}
             >
@@ -149,8 +149,15 @@ export const LoginForm = () => {
             type="submit"
             className="w-full"
             disabled={isPending}
-            variant="outlined"
-            // style={{ color: "#9957ff" }}
+            variant="contained"
+            style={{
+              backgroundColor: "#fafafa",
+              color: "#18181b",
+              opacity: isPending ? 0.5 : 1,
+              borderRadius: "6px",
+              textTransform: "none",
+              boxShadow: "none",
+            }}
           >
             Login
           </Button>

@@ -1,22 +1,15 @@
 import { FC, useTransition } from "react";
 import { useMutation } from "@apollo/client";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
-import { cn } from "@/lib/utils";
-import { Poppins } from "next/font/google";
 import { FOLLOW_USER, UNFOLLOW_USER } from "@/lib/graphql-api";
 import { AUTH_TOKEN_KEY } from "@/config";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 
-const font = Poppins({
-  subsets: ["latin"],
-  weight: ["600"],
-});
-
 interface UserCardProps {
   firstName: string;
+  lastName?: string;
   username: string;
   email?: string;
   ID: string;
@@ -34,6 +27,21 @@ interface UserCardProps {
   refetchCurrentUser?: any;
   isFollowable?: boolean;
 }
+
+interface StatProps {
+  value: number;
+  label: string;
+  testId: string;
+}
+
+const Stat = ({ value, label, testId }: StatProps) => (
+  <div data-testid={testId} style={{ flex: 1 }}>
+    <p style={{ fontSize: "1.125rem", fontWeight: 600, color: "#fafafa" }}>
+      {value ?? 0}
+    </p>
+    <p style={{ fontSize: "0.75rem", color: "#a1a1aa" }}>{label}</p>
+  </div>
+);
 
 const UserCard: FC<UserCardProps> = ({
   currentUser,
@@ -62,6 +70,8 @@ const UserCard: FC<UserCardProps> = ({
     withAuthContext
   );
   const mutationLoading = followLoading || unfollowLoading;
+  // wait for the current user
+  const isDisabled = isPending || mutationLoading || !currentUser?.ID;
 
   function handleFollowUser() {
     const isFollowing = item.isFollowing;
@@ -117,131 +127,119 @@ const UserCard: FC<UserCardProps> = ({
       });
     });
   }
+
   return (
     <Card
-      className="w-[400px] shadow-md"
+      elevation={0}
       style={{
-        maxWidth: "400px",
-        width: "100%",
-        background: "#1c1c1cfb",
-        color: "white",
-        position: "relative",
+        // width: "100%",
+        background: "#27272f",
+        color: "#fafafa",
+        border: "1px solid #27272a",
+        borderRadius: "12px",
+        padding: "1.5rem",
+        display: "flex",
+        flexDirection: "column",
+        gap: "1.25rem",
       }}
     >
-      {!isFollowable && (
+      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
         <div
-          className=""
           style={{
-            padding: "0.2rem 0.5rem",
-            position: "absolute",
-            fontSize: "12px",
-            borderRadius: "100vw",
-            top: "1rem",
-            left: "1rem",
-            backgroundColor: "rgb(16 185 129 / 0.15)", // Assuming Tailwind uses custom color variables
-            color: "rgb(16 185 129",
+            width: "2.75rem",
+            height: "2.75rem",
+            flexShrink: 0,
+            borderRadius: "100%",
+            backgroundColor: "#27272a",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: 600,
           }}
         >
-          YOU
+          {item.firstName?.[0]?.toUpperCase()}
         </div>
-      )}
-      {/* <CardHeader> */}
-      {/* <Header label={headerLabel} header={headerHeading} /> */}
-      <div
-        className="w-full flex flex-col gap-y-4 items-center justify-center"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.5rem", // Adjust gap size as needed
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "1rem",
-        }}
-      >
-        <h1
-          className={cn("text-3xl font-semibold", font.className)}
-          style={{
-            fontSize: "1.875rem",
-            lineHeight: "2.25rem",
-            fontWeight: "600",
-            margin: 0,
-            textTransform: "capitalize",
-          }}
-        >
-          {item?.firstName}
-        </h1>
-        <p
-          className="text-muted-foreground text-sm"
-          style={{
-            margin: 0,
-            fontSize: "0.875rem",
-            lineHeight: "1.25rem",
-            color: "hsl(215 20.2% 65.1%)",
-          }}
-        >
-          username: {item?.username}
-        </p>
-      </div>
-      <div
-        className="w-full flex gap-4 items-center justify-between"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "0.5rem", // Adjust gap size as needed
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "1rem",
-        }}
-      >
-        <p
-          className="text-muted-foreground text-sm"
-          style={{
-            margin: 0,
-            fontSize: "0.875rem",
-            lineHeight: "1.25rem",
-            color: "hsl(215 20.2% 65.1%)",
-          }}
-        >
-          followers: {item?.followerCount}
-        </p>
-        <p
-          className="text-muted-foreground text-sm"
-          style={{
-            margin: 0,
-            fontSize: "0.875rem",
-            lineHeight: "1.25rem",
-            color: "hsl(215 20.2% 65.1%)",
-          }}
-        >
-          following: {item?.followingCount}
-        </p>
-      </div>
-      {/* </CardHeader> */}
-      {/* <CardContent>{children}</CardContent> */}
-      {isFollowable && (
-        <CardActions>
-          <div
-            className=""
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p
             style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "center",
-              marginTop: "1rem",
+              fontWeight: 600,
+              textTransform: "capitalize",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
-            <Button
-              type="submit"
-              className="w-full"
-              variant="outlined"
-              // style={{ color: "#9957ff" }}
-              // wait for the current user so the optimistic payload has its ID
-              disabled={isPending || mutationLoading || !currentUser?.ID}
-              onClick={handleFollowUser}
-            >
-              {item.isFollowing ? "Following" : "Follow"}
-            </Button>
-          </div>
-        </CardActions>
+            {item.firstName} {item.lastName}
+          </p>
+          <p
+            style={{
+              fontSize: "0.875rem",
+              color: "#a1a1aa",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            @{item.username}
+          </p>
+        </div>
+        {!isFollowable && (
+          <span
+            style={{
+              padding: "0.125rem 0.625rem",
+              borderRadius: "6px",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              backgroundColor: "#fafafa",
+              color: "#18181b",
+            }}
+          >
+            You
+          </span>
+        )}
+      </div>
+
+      {/* follower / following counts */}
+      <div
+        style={{
+          display: "flex",
+          padding: "0.75rem 1rem",
+          borderRadius: "8px",
+          backgroundColor: "#18181b",
+        }}
+      >
+        <Stat
+          value={item.followerCount}
+          label="Followers"
+          testId={`followers-${item.ID}`}
+        />
+        <Stat
+          value={item.followingCount}
+          label="Following"
+          testId={`following-${item.ID}`}
+        />
+      </div>
+
+      {isFollowable && (
+        <Button
+          fullWidth
+          variant="contained"
+          disableElevation
+          disabled={isDisabled}
+          onClick={handleFollowUser}
+          style={{
+            // white when you can follow, outlined once you already follow
+            backgroundColor: item.isFollowing ? "#37373d" : "#fafafa",
+            color: item.isFollowing ? "#fafafa" : "#18181b",
+            border: item.isFollowing ? "1px solid #27272a" : "1px solid #fafafa",
+            borderRadius: "6px",
+            textTransform: "none",
+            fontWeight: 500,
+            opacity: isDisabled ? 0.5 : 1,
+          }}
+        >
+          {item.isFollowing ? "Following" : "Follow"}
+        </Button>
       )}
     </Card>
   );
