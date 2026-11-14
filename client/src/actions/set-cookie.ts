@@ -1,6 +1,6 @@
 export async function setCookie(key: string, value: string, expiry: number) {
   try {
-    await fetch(process.env.NEXT_PUBLIC_URL_FE + "/api/set-cookie", {
+    await fetch("/api/set-cookie", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

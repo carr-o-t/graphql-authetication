@@ -3,7 +3,7 @@
 // import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { AUTH_TOKEN_KEY, URL as url } from "./config";
+import { AUTH_TOKEN_KEY } from "./config";
 
 const authRoutes = ["/auth/login", "/auth/signup", "/"];
 
@@ -15,12 +15,12 @@ export default function middleware(req: NextRequest) {
 
   //   user is unauthenticated tried to access protected route we redirect them to "/"
   if (!token && !isAuthRoute) {
-    const absoluteURL = new URL("/auth/signup", url);
+    const absoluteURL = new URL("/auth/signup", req.url);
     return NextResponse.redirect(absoluteURL);
   }
   //   user is authenticated and tries to access auth routes we redirect them to previous path
   else if (token && isAuthRoute) {
-    const absoluteURL = new URL("/dashboard", url);
+    const absoluteURL = new URL("/dashboard", req.url);
     return NextResponse.redirect(absoluteURL);
   }
 }
