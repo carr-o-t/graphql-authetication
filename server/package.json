@@ -1,5 +1,5 @@
 {
-  "name": "task-1",
+  "name": "GraphQL-Authentication-Server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "start": "nodemon index.mjs"
   },
   "keywords": [],
-  "author": "",
+  "author": "ByteTheCarrot",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.10.4",

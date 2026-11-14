@@ -1,7 +1,9 @@
 {
-  "name": "client",
+  "name": "GraphQL-Authentication-Client",
   "version": "0.1.0",
   "private": true,
+  "author": "ByteTheCarrot",
+  "license": "ISC",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
