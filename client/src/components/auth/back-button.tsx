@@ -18,10 +18,10 @@ export const BackButton = ({ href, label }: BackButtonProps) => {
         width: "100%",
         fontSize: "13px",
         textTransform: "capitalize",
-        color: "#1976d2",
+        color: "#a1a1aa",
       }}
     >
-      <Link href={href} style={{ color: "#1976d2" }}>
+      <Link href={href} style={{ color: "#a1a1aa" }}>
         {label}
       </Link>
     </Button>

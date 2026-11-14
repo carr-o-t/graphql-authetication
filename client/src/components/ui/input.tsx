@@ -33,6 +33,16 @@ export const Input = ({ name, control, label, ...props }: inputProps) => {
           placeholder={props.placeholder}
           disabled={props.disabled}
           id={"mui-input"}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              backgroundColor: "#000000",
+              borderRadius: "6px",
+              "& fieldset": { borderColor: "#27272a" },
+              "&:hover fieldset": { borderColor: "#52525b" },
+              "&.Mui-focused fieldset": { borderColor: "#d4d4d8" },
+            },
+            "& .MuiInputBase-input": { color: "#fafafa" },
+          }}
         />
       )}
     />

@@ -69,10 +69,11 @@ export const SignUpForm = () => {
           className="space-y-4 flex flex-col"
           style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
-          <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem" }}>
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
             <FormControl
               style={{
-                width: "100%",
+                flex: "1 1 160px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "0.5rem",
@@ -80,11 +81,11 @@ export const SignUpForm = () => {
             >
               <FormLabel
                 style={{
-                  color: "hsl(215 20.2% 65.1%)",
+                  color: "#a1a1aa",
                   fontSize: "14px !important",
                 }}
               >
-                First name
+                Name
               </FormLabel>
               <Input
                 control={form.control}
@@ -92,38 +93,12 @@ export const SignUpForm = () => {
                 placeholder="John"
                 type="text"
                 disabled={isPending}
-              />
-            </FormControl>
-            <FormControl
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
-              }}
-            >
-              <FormLabel
-                style={{
-                  color: "hsl(215 20.2% 65.1%)",
-                  fontSize: "14px !important",
-                }}
-              >
-                Last name
-              </FormLabel>
-              <Input
-                control={form.control}
-                name="lastName"
-                placeholder="Doe"
-                type="text"
-                disabled={isPending}
                 className="mui-input"
               />
             </FormControl>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "0.5rem" }}>
             <FormControl
               style={{
-                width: "100%",
+                flex: "1 1 160px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "0.5rem",
@@ -131,7 +106,7 @@ export const SignUpForm = () => {
             >
               <FormLabel
                 style={{
-                  color: "hsl(215 20.2% 65.1%)",
+                  color: "#a1a1aa",
                   fontSize: "14px !important",
                 }}
               >
@@ -140,32 +115,7 @@ export const SignUpForm = () => {
               <Input
                 control={form.control}
                 name="username"
-                placeholder="Doe"
-                type="text"
-                disabled={isPending}
-                className="mui-input"
-              />
-            </FormControl>
-            <FormControl
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
-              }}
-            >
-              <FormLabel
-                style={{
-                  color: "hsl(215 20.2% 65.1%)",
-                  fontSize: "14px !important",
-                }}
-              >
-                Phone
-              </FormLabel>
-              <Input
-                control={form.control}
-                name="phoneNumber"
-                placeholder="Doe"
+                placeholder="johndoe"
                 type="text"
                 disabled={isPending}
                 className="mui-input"
@@ -183,7 +133,7 @@ export const SignUpForm = () => {
           >
             <FormLabel
               style={{
-                color: "hsl(215 20.2% 65.1%)",
+                color: "#a1a1aa",
                 fontSize: "14px !important",
               }}
             >
@@ -208,7 +158,7 @@ export const SignUpForm = () => {
           >
             <FormLabel
               style={{
-                color: "hsl(215 20.2% 65.1%)",
+                color: "#a1a1aa",
                 fontSize: "14px !important",
               }}
             >
@@ -239,8 +189,16 @@ export const SignUpForm = () => {
             type="submit"
             className="w-full"
             disabled={isPending}
-            variant="outlined"
-            style={{ cursor: isPending ? "not-allowed" : "pointer" }}
+            variant="contained"
+            style={{
+              backgroundColor: "#fafafa",
+              color: "#18181b",
+              opacity: isPending ? 0.5 : 1,
+              borderRadius: "6px",
+              textTransform: "none",
+              boxShadow: "none",
+              cursor: isPending ? "not-allowed" : "pointer",
+            }}
           >
             Signup
           </Button>

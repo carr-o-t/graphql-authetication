@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { InMemoryCache } from "@apollo/client";
@@ -102,9 +102,9 @@ async function getFollowButton() {
 // wait until alice's card shows this follower count
 async function expectAliceFollowers(count: number) {
   await waitFor(() =>
-    expect(
-      within(screen.getByTestId("followers-2")).getByText(String(count))
-    ).toBeInTheDocument()
+    expect(screen.getByTestId("followers-2")).toHaveTextContent(
+      `${count}Followers`
+    )
   );
 }
 

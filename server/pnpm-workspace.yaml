@@ -1,0 +1,6 @@
+allowBuilds:
+  '@apollo/protobufjs': true
+  bcrypt: true
+  esbuild: true
+  fsevents: true
+  sharp: true

@@ -26,8 +26,8 @@ export const Navbar = () => {
         left: 0,
         right: 0,
         zIndex: 10,
-        backgroundColor: "#1c1c1cfb",
-        borderBottom: "1px solid hsl(217.2 32.6% 17.5%)",
+        backgroundColor: "#09090b",
+        borderBottom: "1px solid #27272a",
       }}
     >
       <Container maxWidth="xl">
@@ -44,7 +44,7 @@ export const Navbar = () => {
               variant="h6"
               noWrap
               component="div"
-              sx={{ display: "flex", color: "white" }}
+              sx={{ display: "flex", color: "#fafafa", fontWeight: 600 }}
             >
               Corroddit
             </Typography>

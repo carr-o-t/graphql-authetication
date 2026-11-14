@@ -63,34 +63,8 @@ const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
   );
 };
 
-const blue = {
-  50: "#F0F7FF",
-  100: "#C2E0FF",
-  200: "#99CCF3",
-  300: "#66B2FF",
-  400: "#3399FF",
-  500: "#007FFF",
-  600: "#0072E6",
-  700: "#0059B3",
-  800: "#004C99",
-  900: "#003A75",
-};
-
-const grey = {
-  50: "#F3F6F9",
-  100: "#E5EAF2",
-  200: "#DAE2ED",
-  300: "#C7D0DD",
-  400: "#B0B8C4",
-  500: "#9DA8B7",
-  600: "#6B7A90",
-  700: "#434D5B",
-  800: "#303740",
-  900: "#1C2025",
-};
-
 const Listbox = styled("ul")(
-  ({ theme }) => `
+  () => `
   font-size: 0.875rem;
   box-sizing: border-box;
   padding: 6px;
@@ -99,9 +73,9 @@ const Listbox = styled("ul")(
   border-radius: 12px;
   overflow: auto;
   outline: 0px;
-  background: ${theme.palette.mode === "dark" ? grey[900] : grey[900]};
-  border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[700]};
-  color: ${theme.palette.mode === "dark" ? grey[300] : grey[300]};
+  background: #09090b;
+  color: #fafafa;
+  border: 1px solid #27272a;
   z-index: 999;
 
   .closed & {
@@ -153,7 +127,7 @@ const AnimatedListbox = React.forwardRef(function AnimatedListbox(
 });
 
 const MenuItem = styled(BaseMenuItem)(
-  ({ theme }) => `
+  () => `
   list-style: none;
   padding: 8px;
   border-radius: 8px;
@@ -165,19 +139,19 @@ const MenuItem = styled(BaseMenuItem)(
   }
 
   &:focus {
-    outline: 3px solid ${theme.palette.mode === "dark" ? blue[600] : blue[600]};
-    background-color: ${theme.palette.mode === "dark" ? grey[800] : grey[800]};
-    color: ${theme.palette.mode === "dark" ? grey[300] : grey[300]};
+    outline: none;
+    background-color: #27272a;
+    color: #fafafa;
   }
 
   &.${menuItemClasses.disabled} {
-    color: ${theme.palette.mode === "dark" ? grey[700] : grey[700]};
+    color: #52525b;
   }
   `
 );
 
 const MenuButton = styled(BaseMenuButton)(
-  ({ theme }) => `
+  () => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
@@ -189,7 +163,7 @@ const MenuButton = styled(BaseMenuButton)(
   cursor: pointer;
   background: transparent;
   border: 0;
-  color: ${theme.palette.mode === "dark" ? grey[200] : grey[200]};
+  color: #fafafa;
 
   &:hover {
   }
@@ -198,9 +172,7 @@ const MenuButton = styled(BaseMenuButton)(
   }
 
   &:focus-visible {
-    box-shadow: 0 0 0 4px ${
-      theme.palette.mode === "dark" ? blue[300] : blue[300]
-    };
+    box-shadow: 0 0 0 2px #d4d4d8;
     outline: none;
   }
   `
